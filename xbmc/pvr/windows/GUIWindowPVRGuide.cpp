@@ -195,7 +195,7 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
     }
     else if (g_PVRClients->SupportsTimers())
     {
-      if (epg->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
+      if (epg->IsRecordable())
         buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);      /* Record */
       buttons.Add(CONTEXT_BUTTON_ADD_TIMER, 19061);       /* Add timer */
     }

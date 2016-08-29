@@ -38,6 +38,7 @@ namespace EPG
   typedef std::shared_ptr<CEpg> CEpgPtr;
   class CEpgInfoTag;
   typedef std::shared_ptr<CEpgInfoTag> CEpgInfoTagPtr;
+  typedef std::shared_ptr<const CEpgInfoTag> CConstEpgInfoTagPtr;
 
 }
 

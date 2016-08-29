@@ -40,7 +40,7 @@ namespace EPG
   class CEpgInfoTag;
   typedef std::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
 
-  class CEpgInfoTag : public ISerializable
+  class CEpgInfoTag : public ISerializable, public std::enable_shared_from_this<CEpgInfoTag>
   {
     friend class CEpg;
     friend class CEpgDatabase;
@@ -84,6 +84,11 @@ namespace EPG
      * @return True if it's active, false otherwise.
      */
     bool IsActive(void) const;
+
+    /* @brief Check if this event can be recorded
+     * @return True if it can be recorded.
+     */
+    bool IsRecordable(void) const;
 
     /*!
      * @return True when this event has already passed, false otherwise.
@@ -404,6 +409,11 @@ namespace EPG
      */
     bool IsSeries() const;
 
+    /*!
+     *  @brief Return the m_iFlags as an unsigned int bitfield (for database use).
+     */
+    unsigned int Flags() const { return m_iFlags; }
+
   private:
 
     /*!
@@ -422,11 +432,6 @@ namespace EPG
      * @brief Get current time, taking timeshifting into account.
      */
     CDateTime GetCurrentPlayingTime(void) const;
-
-    /*!
-     *  @brief Return the m_iFlags as an unsigned int bitfield (for database use).
-     */
-    unsigned int Flags() const { return m_iFlags; }
 
     bool                     m_bNotify;            /*!< notify on start */
 

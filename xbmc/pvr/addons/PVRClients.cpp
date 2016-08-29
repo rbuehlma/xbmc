@@ -30,6 +30,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "epg/EpgInfoTag.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "guilib/GUIWindowManager.h"
@@ -1470,6 +1471,21 @@ time_t CPVRClients::GetPlayingTime() const
   }
 
   return time;
+}
+
+bool CPVRClients::IsRecordable(const CConstEpgInfoTagPtr &tag) const
+{
+  PVR_CLIENT client;
+  bool isRecordable = false;
+
+  if (GetClient(tag->ChannelTag()->ClientID(), client))
+  {
+     if(client->IsRecordable(tag, &isRecordable) != PVR_ERROR_NO_ERROR) {
+       isRecordable = tag->EndAsLocalTime() > CDateTime::GetCurrentDateTime();
+     }
+  }
+
+  return isRecordable;
 }
 
 bool CPVRClients::IsTimeshifting(void) const
