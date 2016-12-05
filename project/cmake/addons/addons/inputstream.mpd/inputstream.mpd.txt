@@ -1,0 +1,1 @@
+inputstream.mpd https://github.com/rbuehlma/inputstream.mpd zattoo_dash
