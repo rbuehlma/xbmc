@@ -31,7 +31,7 @@ DEBUILD_OPTS=${DEBUILD_OPTS:-""}
 PDEBUILD_OPTS=${PDEBUILD_OPTS:-""}
 PBUILDER_BASE=${PBUILDER_BASE:-"/var/cache/pbuilder"}
 DPUT_TARGET=${DPUT_TARGET:-"local"}
-DEBIAN=${DEBIAN:-"https://github.com/xbmc/xbmc-packaging/archive/master.tar.gz"}
+DEBIAN=${DEBIAN:-"https://github.com/rbuehlma/xbmc-packaging/archive/master.tar.gz"}
 BUILD_DATE=$(date '+%Y%m%d.%H%M')
 
 function usage {
@@ -103,6 +103,11 @@ function archiveRepo {
     git clean -xfd
     echo $REV > VERSION
     tools/depends/target/ffmpeg/autobuild.sh -d
+    make -C tools/depends/target/libdvdcss/ download
+    make -C tools/depends/target/libdvdnav/ download
+    make -C tools/depends/target/libdvdread/ download
+    make -C tools/depends/target/rapidjson/
+    make -C tools/depends/target/libfmt/
     DEST="kodi-${RELEASEV}~git${BUILD_DATE}-${TAG}"
     [[ -d debian ]] && rm -rf debian
     cd ..
@@ -145,7 +150,7 @@ function buildDebianPackages {
             if [[ "$BUILDER" =~ "pdebuild" ]]
             then
                 DIST=$dist ARCH=$arch $BUILDER $PDEBUILD_OPTS
-                [ $? -eq 0 ] && uploadPkg || exit 1
+                [ $? -eq 0 ] || exit 1
             else
                 $BUILDER $DEBUILD_OPTS
                 echo "output directory: $REPO_DIR/.."
@@ -183,5 +188,5 @@ fi
 
 checkEnv
 buildDebianPackages
-cleanup
+#cleanup
 
