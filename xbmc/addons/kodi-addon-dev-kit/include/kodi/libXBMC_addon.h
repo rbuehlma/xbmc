@@ -142,6 +142,7 @@ typedef struct CB_AddOn
 
   void* (*OpenFile)(const void* addonData, const char* strFileName, unsigned int flags);
   void* (*OpenFileForWrite)(const void* addonData, const char* strFileName, bool bOverWrite);
+  bool (*GetHeader)(const void* addonData, void* file, const std::string headerName, char* headerValueBuf, int valueBufLen);
   ssize_t (*ReadFile)(const void* addonData, void* file, void* lpBuf, size_t uiBufSize);
   bool (*ReadFileString)(const void* addonData, void* file, char *szLine, int iLineLength);
   ssize_t (*WriteFile)(const void* addonData, void* file, const void* lpBuf, size_t uiBufSize);
@@ -319,6 +320,19 @@ namespace ADDON
     void* OpenFileForWrite(const char* strFileName, bool bOverWrite)
     {
       return m_Callbacks->OpenFileForWrite(m_Handle->addonData, strFileName, bOverWrite);
+    }
+
+    /*!
+     * @brief Get HTTP header from an open file.
+     * @param file The file handle to read from.
+     * @param headerName The name of the requested header
+     * @param [out] headerValueBuf The value buffer
+     * @param valueBufLen The size of the value buffer
+     * @return True if header was returned. False if the file does not support header.
+     */
+    bool GetHttpHeader(void* file, const char* headerName, char* headerValueBuf, int valueBufLen)
+    {
+      return m_Callbacks->GetHeader(m_Handle->addonData, file, headerName, headerValueBuf, valueBufLen);
     }
 
     /*!

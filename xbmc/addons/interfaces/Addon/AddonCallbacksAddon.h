@@ -67,6 +67,7 @@ public:
   static void* OpenFile(const void* addonData, const char* strFileName, unsigned int flags);
   static void* OpenFileForWrite(const void* addonData, const char* strFileName, bool bOverwrite);
   static ssize_t ReadFile(const void* addonData, void* file, void* lpBuf, size_t uiBufSize);
+  static bool GetHeader(const void* addonData, void* file, const std::string headerName, char* headerValueBuf, int valueBufLen);
   static bool ReadFileString(const void* addonData, void* file, char *szLine, int iLineLength);
   static ssize_t WriteFile(const void* addonData, void* file, const void* lpBuf, size_t uiBufSize);
   static void FlushFile(const void* addonData, void* file);

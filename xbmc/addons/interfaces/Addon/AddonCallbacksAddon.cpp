@@ -26,6 +26,7 @@
 #include "utils/log.h"
 #include "LangInfo.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "guilib/LocalizeStrings.h"
@@ -64,6 +65,7 @@ CAddonCallbacksAddon::CAddonCallbacksAddon(CAddon* addon)
   m_callbacks->OpenFile           = OpenFile;
   m_callbacks->OpenFileForWrite   = OpenFileForWrite;
   m_callbacks->ReadFile           = ReadFile;
+  m_callbacks->GetHeader          = GetHeader;
   m_callbacks->ReadFileString     = ReadFileString;
   m_callbacks->WriteFile          = WriteFile;
   m_callbacks->FlushFile          = FlushFile;
@@ -353,6 +355,27 @@ ssize_t CAddonCallbacksAddon::ReadFile(const void* addonData, void* file, void* 
     return 0;
 
   return cfile->Read(lpBuf, uiBufSize);
+}
+
+bool CAddonCallbacksAddon::GetHeader(const void* addonData, void* file, const std::string headerName, char* headerValueBuf, int valueBufLen)
+{
+  CAddonInterfaces* helper = (CAddonInterfaces*) addonData;
+  if (!helper)
+    return 0;
+
+  CFile* cfile = (CFile*)file;
+  if (!cfile)
+    return 0;
+
+  IFile *ifile = cfile->GetImplementation();
+  if(CCurlFile* v = dynamic_cast<CCurlFile*>(ifile)) {
+    const CHttpHeader &header = v->GetHttpHeader();
+    std::string value = header.GetValue(headerName);
+    strncpy(headerValueBuf, value.c_str(), valueBufLen);
+    return true;
+  }
+
+  return false;
 }
 
 bool CAddonCallbacksAddon::ReadFileString(const void* addonData, void* file, char *szLine, int iLineLength)
